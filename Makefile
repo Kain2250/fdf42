@@ -6,26 +6,14 @@
 #    By: bdrinkin <bdrinkin@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/12/17 20:07:40 by bdrinkin          #+#    #+#              #
-#    Updated: 2020/02/11 17:44:46 by bdrinkin         ###   ########.fr        #
+#    Updated: 2021/01/11 17:11:51 by bdrinkin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = fdf
 
-CC = gcc
-FLAGS = -Wall -Wextra -O3
-LIBRARIES_MAC = -lmlx -lm -lft -L$(LIBFT_DIRECTORY) -L$(MINILIBX_DIRECTORY) -framework OpenGL -framework AppKit
-LIBRARIES_UBUNTU = -lm -lft -L$(LIBFT_DIRECTORY) -L /usr/X11/lib /usr/X11/lib/libmlx.a -lXext -lX11
-
-HEADERS = -I $(INCLUDES_DIRECTORY)
-LIBFT = $(LIBFT_DIRECTORY)libft.a
-LIBFT_DIRECTORY = libft/
-
-INCLUDES_DIRECTORY = includes/
-INCLUDES_LIST = fdf.h
-
-SRC_DIRECTORY = src/
-SRC_LIST = bonus_hook_list.c\
+BUILD_DIR := build
+SRC := bonus_hook_list.c\
 	bonus.c\
 	change.c\
 	cheker.c\
@@ -39,36 +27,61 @@ SRC_LIST = bonus_hook_list.c\
 	main.c\
 	output_map.c\
 	read_file.c
-	
-SRC = $(addprefix $(SRC_DIRECTORY), $(SRC_LIST))
 
-MINILIBX_DIRECTORY = /usr/local/lib/
+OBJ := $(SRC:%.c=$(BUILD_DIR)/%.o)
+DEP := $(OBJ:%.o=%.d)
 
-GREEN = \033[0;32;1m
-RED = \033[0;31;1m
-RESET = \033[0m
+LFT_DIR := libft
+LFT_LIB := -L$(LFT_DIR) -lft
+
+ifeq ($(shell uname -s), Linux)
+	MLX_DIR := minilibx_linux
+	MLX_LIB := -lXext -lX11
+else
+	MLX_DIR := minilibx_macos
+	MLX_LIB := -framework OpenGL -framework AppKit
+endif
+MLX_LIB += -L$(MLX_DIR) -lmlx
+
+CC := clang
+
+# MAKEFLAGS += -j
+WFLAGS := -Wall -Wextra
+WFLAGS += -Werror
+# WFLAGS += -Wpedantic
+# OFLAGS := -g
+OFLAGS := -O3 -march=native
+OFLAGS += -ffast-math
+CFLAGS := $(WFLAGS) $(OFLAGS) -MMD -I$(LFT_DIR)/includes -I $(MLX_DIR) -I includes
+LFLAGS := $(LFT_LIB) $(MLX_LIB) -lm
+
+vpath %.c src
 
 .PHONY: all clean fclean re
 
+$(NAME): $(OBJ)
+	@make -sC $(MLX_DIR) all
+	@make -sC $(LFT_DIR) all
+	@printf "[$(NAME)] Linking objects...\n"
+	@$(CC) $(OBJ) -o $(NAME) $(LFLAGS)
+	@printf "\033[32;1m[$(NAME)] Done\033[0m\n"
+
+-include $(DEP)
+$(BUILD_DIR)/%.o: %.c
+	@mkdir -p $(@D)
+	@printf "[$(NAME)] Building object '$@'\n"
+	@$(CC) $(CFLAGS) -o $@ -c $<
+
 all: $(NAME)
 
-$(NAME): $(LIBFT)
-	@$(CC) $(FLAGS) $(SRC) -o $(NAME) $(LIBRARIES_MAC) $(HEADERS)
-	@echo "\n$(NAME): $(GREEN)Создание исполняемого файла$(RESET)"
-	@echo "$(NAME): $(GREEN)$(NAME) Готово$(RESET)"
-
-$(LIBFT):
-	@echo "$(NAME): $(GREEN)Создание $(LIBFT)...$(RESET)"
-	@$(MAKE) -sC $(LIBFT_DIRECTORY)
-
 clean:
-	@make -sC $(LIBFT_DIRECTORY) clean
+	@make -sC $(MLX_DIR) clean
+	@make -sC $(LFT_DIR) clean
+	@rm -rf $(BUILD_DIR)
 
 fclean: clean
-	@rm -f $(LIBFT)
-	@echo "$(NAME): $(RED)$(LIBFT) было удалено$(RESET)"
+	@make -sC $(LFT_DIR) fclean
 	@rm -f $(NAME)
-	@echo "$(NAME): $(RED)$(NAME) было удалено$(RESET)"
 
-
-re: fclean all
+re: fclean
+	@make all

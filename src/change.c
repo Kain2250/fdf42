@@ -6,7 +6,7 @@
 /*   By: bdrinkin <bdrinkin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/21 19:06:24 by bdrinkin          #+#    #+#             */
-/*   Updated: 2020/02/11 00:09:31 by bdrinkin         ###   ########.fr       */
+/*   Updated: 2021/01/11 13:58:23 by bdrinkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,30 +15,42 @@
 void			rotate_x(int *y, int *z, double alpha)
 {
 	int			previous_y;
+	float		cs;
+	float		sn;
 
+	cs = cos(alpha);
+	sn = sin(alpha);
 	previous_y = *y;
-	*y = previous_y * cos(alpha) + *z * sin(alpha);
-	*z = -previous_y * sin(alpha) + *z * cos(alpha);
+	*y = previous_y * cs + *z * sn;
+	*z = -previous_y * sn + *z * cs;
 }
 
 void			rotate_y(int *x, int *z, double beta)
 {
 	int			previous_x;
+	float		cs;
+	float		sn;
 
+	cs = cos(beta);
+	sn = sin(beta);
 	previous_x = *x;
-	*x = previous_x * cos(beta) + *z * sin(beta);
-	*z = -previous_x * sin(beta) + *z * cos(beta);
+	*x = previous_x * cs + *z * sn;
+	*z = -previous_x * sn + *z * cs;
 }
 
 void			rotate_z(int *x, int *y, double gamma)
 {
 	int			previous_x;
 	int			previous_y;
+	float		cs;
+	float		sn;
 
+	cs = cos(gamma);
+	sn = sin(gamma);
 	previous_x = *x;
 	previous_y = *y;
-	*x = previous_x * cos(gamma) - previous_y * sin(gamma);
-	*y = previous_x * sin(gamma) + previous_y * cos(gamma);
+	*x = previous_x * cs - previous_y * sn;
+	*y = previous_x * sn + previous_y * cs;
 }
 
 static void		isometria(int *x, int *y, int z)

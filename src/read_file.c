@@ -6,7 +6,7 @@
 /*   By: bdrinkin <bdrinkin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/17 19:22:23 by bdrinkin          #+#    #+#             */
-/*   Updated: 2020/02/10 22:42:15 by bdrinkin         ###   ########.fr       */
+/*   Updated: 2021/01/11 13:41:16 by bdrinkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ void		read_file(char *av, t_fdf *f)
 	char	*buff;
 
 	if ((fd = open(av, O_RDONLY)) < 0)
-		error_exit("\033[0;31;1mError open\033[0m", f);
+		error_exit(ERR_OPEN, f);
 	while (get_next_line2(fd, &buff))
 	{
 		if (check_line(buff) && (f->size_x = get_x(buff, f)) != 0)
@@ -118,12 +118,12 @@ void		read_file(char *av, t_fdf *f)
 		else
 		{
 			free(buff);
-			error_exit("\033[0;31;1mInvalid file\033[0m", f);
+			error_exit(ERR_FILE, f);
 		}
 		ft_strdel(&buff);
 	}
 	if (!f->size_x && !f->size_y)
-		error_exit("\033[0;31;1mInvalid file\033[0m", f);
+		error_exit(ERR_FILE, f);
 	close(fd);
 	fd = open(av, O_RDONLY);
 	buff = read_line(fd);

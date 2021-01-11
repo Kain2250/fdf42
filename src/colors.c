@@ -6,7 +6,7 @@
 /*   By: bdrinkin <bdrinkin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/07 18:07:40 by bdrinkin          #+#    #+#             */
-/*   Updated: 2020/02/11 00:07:03 by bdrinkin         ###   ########.fr       */
+/*   Updated: 2021/01/11 14:03:33 by bdrinkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int			get_light(int start, int end, double percentage)
 }
 
 int			get_color(t_coord current, t_coord start, t_coord end,
-t_coord delta)
+				t_coord delta)
 {
 	int		red;
 	int		green;

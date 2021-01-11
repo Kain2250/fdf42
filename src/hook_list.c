@@ -6,7 +6,7 @@
 /*   By: bdrinkin <bdrinkin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/19 15:31:50 by bdrinkin          #+#    #+#             */
-/*   Updated: 2020/02/11 00:10:23 by bdrinkin         ###   ########.fr       */
+/*   Updated: 2021/01/11 13:27:21 by bdrinkin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static int	key_press(int key, void *param)
 	t_fdf	*f;
 
 	f = (t_fdf *)param;
-	if (key == 53)
+	if (key == KEY_ESC)
 		exit(0);
 	if (key == 35 || key == 8 || key == 37 || key == 40)
 		bonus_hook(key, f);
